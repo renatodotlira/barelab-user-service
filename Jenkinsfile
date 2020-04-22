@@ -1,7 +1,7 @@
 def LABEL_ID = "questcode-${UUID.randomUUID().toString()}"
 
 podTemplate(
-    label: 'questcode', 
+    label: LABEL_ID, 
     containers: [
         containerTemplate(args: 'cat', name: 'docker', command: '/bin/sh -c', image: 'docker', ttyEnabled: true),
         containerTemplate(args: 'cat', name: 'helm', command: '/bin/sh -c', image: 'lachlanevenson/k8s-helm:v2.11.0', ttyEnabled: true)
@@ -22,7 +22,7 @@ podTemplate(
     def HELM_CHART_NAME     = "questcode/backend-user"      
     def HELM_DEPLOY_NAME
     def CHARTMUSEUM_URL     = "http://helm-chartmuseum:8080" 
-    def NODE_PORT = "30022"
+    def NODE_PORT = 30022
 
     // Start
     node(LABEL_ID) {                       
@@ -39,7 +39,7 @@ podTemplate(
                 KUBE_NAMESPACE = 'staging'
                 ENVIROMENT = "staging"
                 IMAGE_POSFIX = "-RC"
-                NODE_PORT = "30020"
+                NODE_PORT = 30020
             } else {
                 echo "Branch selecionada: ${GIT_BRANCH}"
                 def error = "Nao existe pipeline para a branch ${GIT_BRANCH}"
