@@ -22,7 +22,6 @@ podTemplate(
     def HELM_CHART_NAME     = "questcode/backend-user"      
     def HELM_DEPLOY_NAME
     def CHARTMUSEUM_URL     = "http://helm-chartmuseum:8080" 
-    def NODE_PORT = 30022
 
     // Start
     node(LABEL_ID) {                       
@@ -39,7 +38,6 @@ podTemplate(
                 KUBE_NAMESPACE = 'staging'
                 ENVIROMENT = "staging"
                 IMAGE_POSFIX = "-RC"
-                NODE_PORT = 30020
             } else {
                 echo "Branch selecionada: ${GIT_BRANCH}"
                 def error = "Nao existe pipeline para a branch ${GIT_BRANCH}"
@@ -70,10 +68,10 @@ podTemplate(
                 sh 'helm repo update'
                 try {
                     //tenta fazer upgrade com HELM
-                    sh "helm upgrade --namespace=${KUBE_NAMESPACE} ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} --set image.tag=${IMAGE_VERSION} --set service.nodePort=${NODE_PORT}"
+                    sh "helm upgrade --namespace=${KUBE_NAMESPACE} ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} --set image.tag=${IMAGE_VERSION}"
                 } catch (Exception e) {
                     //faz install com HELM
-                    sh "helm install --namespace=${KUBE_NAMESPACE} --name ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} --set image.tag=${IMAGE_VERSION} --set service.nodePort=${NODE_PORT}"
+                    sh "helm install --namespace=${KUBE_NAMESPACE} --name ${HELM_DEPLOY_NAME} ${HELM_CHART_NAME} --set image.tag=${IMAGE_VERSION}"
                 }
                 
             }                        
